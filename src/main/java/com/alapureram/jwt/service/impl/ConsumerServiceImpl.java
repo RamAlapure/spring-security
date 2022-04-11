@@ -2,7 +2,6 @@ package com.alapureram.jwt.service.impl;
 
 import com.alapureram.jwt.exception.ResourceNotFoundException;
 import com.alapureram.jwt.model.Consumer;
-import com.alapureram.jwt.repository.ConsumerRepository;
 import com.alapureram.jwt.request.ConsumerRequest;
 import com.alapureram.jwt.service.ConsumerService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +19,6 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class ConsumerServiceImpl implements ConsumerService {
-
-    @Autowired
-    private ConsumerRepository consumerRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

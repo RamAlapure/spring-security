@@ -1,5 +1,6 @@
 package com.alapureram.jwt.config;
 
+import com.alapureram.jwt.filter.CustomAuthenticationEntryPoint;
 import com.alapureram.jwt.filter.JwtTokenFilter;
 import com.alapureram.jwt.service.ConsumerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -35,6 +35,9 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Autowired
+    private CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -56,12 +59,12 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers(AUTH_WHITELIST).permitAll()
                 .anyRequest().authenticated()
         );
-        http = http
+        http
                 .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                        .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
-        //http.headers().cacheControl();
+        http.headers().cacheControl();
 
     }
 
