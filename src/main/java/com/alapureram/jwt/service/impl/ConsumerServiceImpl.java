@@ -1,5 +1,6 @@
 package com.alapureram.jwt.service.impl;
 
+import com.alapureram.jwt.exception.ResourceNotFoundException;
 import com.alapureram.jwt.model.Consumer;
 import com.alapureram.jwt.repository.ConsumerRepository;
 import com.alapureram.jwt.request.ConsumerRequest;
@@ -26,7 +27,7 @@ public class ConsumerServiceImpl implements ConsumerService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private Map<String, Consumer> map = new HashMap<>();
+    private final Map<String, Consumer> map = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -44,8 +45,10 @@ public class ConsumerServiceImpl implements ConsumerService {
     }
 
     @Override
-    public Consumer find(String id) {
-        return map.getOrDefault(id, null);
+    public Consumer find(String id) throws ResourceNotFoundException {
+        Consumer consumer = map.get(id);
+        if (consumer == null) throw new ResourceNotFoundException("Consumer not found for id: " + id);
+        return consumer;
     }
 
     @Override
